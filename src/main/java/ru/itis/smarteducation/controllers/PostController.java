@@ -2,7 +2,6 @@ package ru.itis.smarteducation.controllers;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +13,7 @@ import ru.itis.smarteducation.controllers.dto.PostCreateDto;
 import ru.itis.smarteducation.models.Post;
 import ru.itis.smarteducation.services.PostDetailService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -25,13 +25,19 @@ public class PostController {
     public String listOfPost(Model model) {
         PostCreateDto postDto = new PostCreateDto();
         List<Post> posts = postDetailService.ListAllPosts();
-        model.addAttribute("post", posts);
+        model.addAttribute("posts", posts);
         return "index";
+    }
+    @GetMapping("/createpost")
+    public String showRegistrationForm(Model model) {
+        PostCreateDto postDto = new PostCreateDto();
+        model.addAttribute("post", postDto);
+        return "createpost";
     }
     @PostMapping("/createpost")
     public ModelAndView CreatePostForm(@ModelAttribute("post") @Valid PostCreateDto postCreateDto) throws JsonProcessingException {
         postDetailService.createNewPost(postCreateDto);
 
-        return new ModelAndView("excelent", "post", postCreateDto);
+        return new ModelAndView("successful", "post", postCreateDto);
     }
 }
